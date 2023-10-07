@@ -57,9 +57,7 @@ const hasError = (variableAVerificar) => {
   isValid = true
 
   if (!variableAVerificar.length) {
-
     error.innerHTML = "El input esta vacio"
-
     return
   } else if (variableAVerificar > pizzas.length || variableAVerificar < 1) {
     error.innerHTML = "La pizza seleccionada no existe"
@@ -70,8 +68,7 @@ const hasError = (variableAVerificar) => {
 }
 
 const renderizarPizza = (pizzaSeleccionada) => {
-  const selectedPizza = pizzas.filter((pizza) => { return pizza.id == pizzaSeleccionada })
-  const { nombre, ingredientes, precio, imagen } = selectedPizza[0]
+  const { nombre, ingredientes, precio, imagen } = pizzaSeleccionada
 
   return contenedorRender.innerHTML =
     `
@@ -89,14 +86,20 @@ const saveLS = (selection) => {
   localStorage.setItem('pizzaGuardada', JSON.stringify(selection))
 }
 
+const filterPizza = (pizzasArray, pizzaSelected) => {
+  const selectedPizza = pizzasArray.filter((pizza) => { return pizza.id == pizzaSelected })
+  return selectedPizza[0]
+}
 
 const seleccionarPizza = () => {
     const valorPizza = pizzaSeleccionada.value
   contenedorRender.innerHTML = ""
+
   if (hasError(valorPizza)) {
     error.innerHTML = ""
     saveLS(valorPizza)
-    renderizarPizza(valorPizza)
+    const pizzaFiltrada = filterPizza(pizzas,valorPizza)
+    renderizarPizza(pizzaFiltrada)
   }
 
 }
@@ -104,7 +107,8 @@ const seleccionarPizza = () => {
 const pizzaGuardada = () => {
       const pizzaPorDefecto = JSON.parse(localStorage.getItem('pizzaGuardada'))
     if (pizzaPorDefecto) {
-     renderizarPizza(pizzaPorDefecto)
+      const pizzaFiltrada = filterPizza(pizzas, pizzaPorDefecto)
+     renderizarPizza(pizzaFiltrada)
     }
 }
 
